@@ -1,0 +1,46 @@
+<?php
+
+
+
+function multistep_form_form($form, &$form_state, $controller_name = 'DefaultMultistepForm') {
+  // Get the form controller 
+  $controller  = multistep_form_get_form_controller($controller_name, $form, $form_state);
+  $form = $controller->form($form, $form_state);
+  return $form;
+}
+
+function multistep_form_form_validate($form, &$form_state) {
+  $controller  = multistep_form_get_form_controller($form_state['controller_name'], $form, $form_state);
+  $current_step = $form_state['step'];
+  // Cal the appropriate validations - all of this logic needs to be part of the class
+  foreach ($form_state['step_information'][$current_step]['validation'] as $validation_function) {
+    $controller->$validation_function($form, $form_state);  
+  }
+}
+
+function multistep_form_form_submit($form, &$form_state) {
+  $current_step = $form_state['step'];
+  $controller = multistep_form_get_form_controller($form_state['controller_name'], $form, $form_state);
+  // all of this logic needs to be part of the class
+  switch ($form_state['triggering_element']['#name']) {
+    case 'next':
+      $controller->next($form, $form_state);
+      break;
+    case 'prev':
+      $controller->previous($form, $form_state);
+      break;
+    case 'finish':
+      $controller->finish($form, $form_state);
+  }
+}
+
+/**
+ * Gets registration form controller for a pursuit type
+ */
+function multistep_form_get_form_controller($controller_name, $form, &$form_state) {
+  $controllers = &drupal_static(__FUNCTION__, array());
+  if (!isset($controllers[$controller_name])) {
+    $controllers[$controller_name] = new $controller_name($form, $form_state);
+  }
+  return $controllers[$controller_name];
+}

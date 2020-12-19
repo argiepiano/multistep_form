@@ -1,0 +1,6 @@
+name = Multistep forms
+description = A simple implementation of multistep forms. Extend class DefaulMultistepForm to implement
+core = 7.x
+package = Scheduling
+
+files[] = includes/default_multistep_form.inc
