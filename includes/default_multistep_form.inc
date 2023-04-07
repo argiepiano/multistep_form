@@ -157,7 +157,7 @@ class DefaultMultistepForm implements DefaultMultistepFormInterface {
       $current_step--;
       $this->form_state['values'] = $this->form_state['step_information'][$current_step]['stored_values'];
     }
-    $form_state['rebuild'] = TRUE;
+    $this->form_state['rebuild'] = TRUE;
   }
 
   /**
